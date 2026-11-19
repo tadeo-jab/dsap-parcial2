@@ -1,0 +1,14 @@
+Cambios realizados por la IA:
+
+- Programa.kt → Se agregaron retirarAusentes(), vaciar() y reemplazar() (transacción). La sincronización ahora refleja la instantánea completa: borra las filas ausentes (v4 vacía la tabla, v3 retira la charla 11).
+- AgendaRepository.kt → sincronizar() ahora llama a dao.reemplazar() en lugar de dao.guardar().
+- Programa.kt → reemplazar() conserva las favoritas: lee idsMarcadas() dentro de la transacción y escribe la instantánea respetando las marcas vigentes (pedido 42).
+- ProgramaModel.kt → agregado hayEdicion (persistido en SharedPreferences "estado"); recargar() lo setea al sincronizar con éxito y diferencia el aviso de falla («datos guardados» vs. sin descarga previa).
+- Catalogo.kt → render según estado: reintento solo sin edición previa, «Sin charlas programadas» con edición vacía (v4) y aviso sobre la lista cuando hay datos guardados (pedido 41).
+
+fix no se muestra que se usa datos locales
+- ProgramaModel.kt → aviso ya no se borra al iniciar recargar(); se limpia solo al sincronizar con éxito (la notificación no parpadea durante la espera).
+- Portada.kt → el aviso se muestra bajo el título, visible en todas las secciones y en el detalle.
+- Catalogo.kt → quitado el Text(aviso) local (ahora vive en Portada, evita duplicado).
+
+boton de reintentar

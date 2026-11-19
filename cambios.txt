@@ -1,0 +1,4 @@
+Nota: (Se agrego la dependencia okHttp del Teams para que el programa compile)
+
+Cambios:
+Programa.kt → Se agrego vaciar() y retirarAusentes(), eliminando los que no estan

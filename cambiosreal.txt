@@ -19,7 +19,7 @@ pedido 43 - filtros guardados
 - Catalogo.kt → usa model.dia y model.tema en lugar del remember local (el filtro ya no se pierde al abrir una ficha ni al rotar).
 
 pedido 44 - control de descargas
-- ProgramaModel.kt → cargarAutomatica() (una sola por proceso, flag en memoria) y recargar() con agrupación: toques durante una petición encolan un único intento.
+- ProgramaModel.kt → cargarAutomatica() (una sola por proceso, flag en memoria); recargar() encola UN intento por petición en curso (los toques durante la petición y durante la encolada se ignoran; al quedar inactivo se puede volver a pedir). Modelo confirmado por el profesor: 2 toques = 1 intento en el contador.
 - MainActivity.kt → quitado recargar() de onStart() (ya no recarga al rotar ni al volver a primer plano).
 - Catalogo.kt → quitado el LaunchedEffect(Unit) que recargaba al recomponerse.
 - Portada.kt → LaunchedEffect(Unit) { model.cargarAutomatica() } para la carga inicial por sesión.

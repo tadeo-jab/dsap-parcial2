@@ -32,14 +32,18 @@ class ProgramaModel(app: Application, private val estado: SavedStateHandle) : An
     }
 
     fun recargar() {
-        if (enCurso) pendiente = true else ejecutar()
+        if (!enCurso && !pendiente) {
+            ejecutar()
+        } else if (enCurso && !pendiente) {
+            pendiente = true
+        }
     }
 
     fun elegirDia(d: Int) { estado["dia"] = d }
 
     fun elegirTema(t: String) { estado["tema"] = t }
 
-    private fun ejecutar() {
+    private fun ejecutar(encolada: Boolean = false) {
         enCurso = true
         viewModelScope.launch {
             cargando.value = true
@@ -54,9 +58,10 @@ class ProgramaModel(app: Application, private val estado: SavedStateHandle) : An
             } finally {
                 cargando.value = false
                 enCurso = false
-                if (pendiente) {
+                if (pendiente && !encolada) {
+                    ejecutar(encolada = true)
+                } else if (encolada) {
                     pendiente = false
-                    ejecutar()
                 }
             }
         }

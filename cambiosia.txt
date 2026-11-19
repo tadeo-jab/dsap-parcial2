@@ -11,4 +11,16 @@ fix no se muestra que se usa datos locales
 - Portada.kt → el aviso se muestra bajo el título, visible en todas las secciones y en el detalle.
 - Catalogo.kt → quitado el Text(aviso) local (ahora vive en Portada, evita duplicado).
 
-boton de reintentar
+actualizar en mi agenda
+- Portada.kt → agregado botón «Actualizar» en la sección Mi agenda (misma acción explícita que en Programa).
+
+pedido 43 - filtros guardados
+- ProgramaModel.kt → dia y tema ahora viven en SavedStateHandle (sobreviven rotación y muerte del proceso); setters elegirDia()/elegirTema().
+- Catalogo.kt → usa model.dia y model.tema en lugar del remember local (el filtro ya no se pierde al abrir una ficha ni al rotar).
+
+pedido 44 - control de descargas
+- ProgramaModel.kt → cargarAutomatica() (una sola por proceso, flag en memoria) y recargar() con agrupación: toques durante una petición encolan un único intento.
+- MainActivity.kt → quitado recargar() de onStart() (ya no recarga al rotar ni al volver a primer plano).
+- Catalogo.kt → quitado el LaunchedEffect(Unit) que recargaba al recomponerse.
+- Portada.kt → LaunchedEffect(Unit) { model.cargarAutomatica() } para la carga inicial por sesión.
+

@@ -18,6 +18,7 @@ fun Portada(model: ProgramaModel) {
     var detalle by rememberSaveable { mutableStateOf<String?>(null) }
     val charlas by model.charlas.collectAsStateWithLifecycle()
     val aviso by model.aviso.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) { model.cargarAutomatica() }
     BackHandler(detalle != null || seccion != "Programa") {
         if (detalle != null) detalle = null else seccion = "Programa"
     }
@@ -53,6 +54,7 @@ fun Portada(model: ProgramaModel) {
                     when (seccion) {
                         "Programa" -> Catalogo(model) { detalle = it }
                         "Mi agenda" -> {
+                            TextButton(onClick = model::recargar) { Text("Actualizar") }
                             val guardadas = charlas.filter { it.favorita }
                             if (guardadas.isEmpty()) Text("Todavía no agregaste charlas.")
                             Grilla(guardadas) { detalle = it }

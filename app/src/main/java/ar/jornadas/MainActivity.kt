@@ -16,9 +16,4 @@ class MainActivity : ComponentActivity() {
         }
         setContent { Portada(model) }
     }
-
-    override fun onStart() {
-        super.onStart()
-        model.recargar()
-    }
 }

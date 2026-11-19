@@ -8,18 +8,39 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.io.IOException
 
-class ProgramaModel(app: Application) : AndroidViewModel(app) {
+class ProgramaModel(app: Application, private val estado: SavedStateHandle) : AndroidViewModel(app) {
     private val servicios = Servicios(app)
     val mesa = servicios.mesa
     private val repo = servicios.agenda
     private val prefs = app.getSharedPreferences("estado", Context.MODE_PRIVATE)
     val charlas = repo.programa.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
-    val dia = MutableStateFlow(0)
+    val dia = estado.getStateFlow("dia", 0)
+    val tema = estado.getStateFlow("tema", "Todos")
     val aviso = MutableStateFlow("")
     val cargando = MutableStateFlow(false)
     val hayEdicion = MutableStateFlow(prefs.getBoolean("edicionGuardada", false))
 
+    private var cargadaAutomatica = false
+    private var enCurso = false
+    private var pendiente = false
+
+    fun cargarAutomatica() {
+        if (!cargadaAutomatica) {
+            cargadaAutomatica = true
+            ejecutar()
+        }
+    }
+
     fun recargar() {
+        if (enCurso) pendiente = true else ejecutar()
+    }
+
+    fun elegirDia(d: Int) { estado["dia"] = d }
+
+    fun elegirTema(t: String) { estado["tema"] = t }
+
+    private fun ejecutar() {
+        enCurso = true
         viewModelScope.launch {
             cargando.value = true
             try {
@@ -32,6 +53,11 @@ class ProgramaModel(app: Application) : AndroidViewModel(app) {
                               else "No se pudo consultar el programa"
             } finally {
                 cargando.value = false
+                enCurso = false
+                if (pendiente) {
+                    pendiente = false
+                    ejecutar()
+                }
             }
         }
     }
